@@ -45,6 +45,7 @@ class BusinessesViewController: UIViewController, UIScrollViewDelegate {
                     i += 1
                 }
                 self.tableview.reloadData()
+                self.loadingView.stopAnimating()
             }
         }
         
@@ -74,6 +75,7 @@ extension BusinessesViewController: UISearchBarDelegate {
             let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
             return range.location != NSNotFound
         })
+        waitting()
         Business.search(with: "") { (businesses: [Business]?, error: Error?) in
             if filter.count == 0 {
                  self.businesses = businesses
@@ -90,12 +92,13 @@ extension BusinessesViewController: UISearchBarDelegate {
                 }
             }
             self.tableview.reloadData()
+            self.loadingView.stopAnimating()
         }
     }
 }
 extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate, FilterViewControllerDelegate {
     func filterViewController(filterViewController: FilterViewController, didUpdateFilter filters: [String], Deal: Bool, Distance: String, sort: YelpSortMode) {
-
+        waitting()
         Business.search(with: "", sort: sort, categories: filters, deals: Deal) { (businesses: [Business]!, error: Error!) in
             if Distance == "Auto" {
                 self.businesses = businesses
@@ -110,6 +113,7 @@ extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate, 
                 }
             }
             self.tableview.reloadData()
+            self.loadingView.stopAnimating()
         }
     }
 
